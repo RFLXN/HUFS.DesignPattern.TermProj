@@ -8,35 +8,35 @@ from .api_type import ApiEndpointBuilder, EndpointParam, ApiDirectory
 from util.json import load_json_from_file, write_json_to_file
 
 
-def get_resource_path() -> str:
+def _get_resource_path() -> str:
     return str((Path(dirname(realpath(__file__))) / ".." / "resource").resolve())
 
 
-def get_api_info_file_path() -> str:
+def _get_api_info_file_path() -> str:
     """get api-info.json file path
     :return: str
     """
-    return str((Path(get_resource_path()) / "api-info.json").resolve())
+    return str((Path(_get_resource_path()) / "api-info.json").resolve())
 
 
-def get_api_info() -> dict:
+def _get_api_info() -> dict:
     """get api info
     :return: dict
     """
-    return load_json_from_file(get_api_info_file_path())
+    return load_json_from_file(_get_api_info_file_path())
 
 
-def get_api_key_file_path() -> str:
-    return str((Path(get_resource_path()) / "api-key.json").resolve())
+def _get_api_key_file_path() -> str:
+    return str((Path(_get_resource_path()) / "api-key.json").resolve())
 
 
-def get_api_key_default_file_path() -> str:
-    return str((Path(get_resource_path()) / "api-key.default.json").resolve())
+def _get_api_key_default_file_path() -> str:
+    return str((Path(_get_resource_path()) / "api-key.default.json").resolve())
 
 
-def get_api_key() -> str:
+def _get_api_key() -> str:
     try:
-        obj = load_json_from_file(get_api_key_file_path())
+        obj = load_json_from_file(_get_api_key_file_path())
         if obj["apiKey"] is None or obj["apiKey"] == "":
             raise Exception
         return obj["apiKey"]
@@ -44,21 +44,21 @@ def get_api_key() -> str:
         raise ApiKeyNotSetException
 
 
-def cp_default_api_key():
-    copyfile(get_api_key_default_file_path(), get_api_key_file_path())
+def _cp_default_api_key():
+    copyfile(_get_api_key_default_file_path(), _get_api_key_file_path())
 
 
-def set_api_key(key: str):
+def _set_api_key(key: str):
     obj = {
         "apiKey": key
     }
-    write_json_to_file(obj, get_api_key_file_path())
+    write_json_to_file(obj, _get_api_key_file_path())
 
 
 class ApiInfoStore(metaclass=SingletonMeta):
     def __init__(self):
-        self.__api_path = get_api_info_file_path()
-        self.__raw_info = get_api_info()
+        self.__api_path = _get_api_info_file_path()
+        self.__raw_info = _get_api_info()
         self.__api_root_url = self.__raw_info["apiRoot"]
         self.__api_directories = PathLikeDict()
         self.do_init_info()
@@ -102,19 +102,22 @@ class ApiKeyStore(metaclass=SingletonMeta):
         self.__api_key = None
 
     def load_key(self) -> str:
-        self.__api_key = get_api_key()
+        self.__api_key = _get_api_key()
         return self.__api_key
 
     def is_key_file_exist(self) -> bool:
         try:
-            get_api_key()
+            _get_api_key()
             return True
         except:
             return False
 
     def set_key(self, key: str):
         self.__api_key = key
-        set_api_key(key)
+        _set_api_key(key)
+        
+    def create_key_file(self):
+        _cp_default_api_key()
 
     @property
     def key(self) -> str:

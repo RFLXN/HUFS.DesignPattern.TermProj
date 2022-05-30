@@ -1,0 +1,46 @@
+{
+  "apiRoot": "https://www.virustotal.com/vtapi/v2",
+  "endpoints": {
+    "files": {
+      "report": {
+        "path": "/file/report",
+        "method": "GET",
+        "params": [
+          {
+          "name": "apiKey",
+          "type": "string"
+          },
+          {
+            "name": "resource",
+            "type": "string"
+          },
+          {
+            "name": "allInfo",
+            "type": "boolean"
+          }
+        ]
+      },
+      "scan": {
+        "path": "/file/scan",
+        "method": "POST",
+        "params": [
+          {
+            "name": "apiKey",
+            "type": "string"
+          }
+        ]
+      },
+      "bigFileUploadUrl": {
+        "path": "/file/scan/upload_url",
+        "method": "GET",
+        "params": [
+          {
+            "name": "apiKey",
+            "type": "string"
+          }
+        ]
+      }
+    }
+
+  }
+}
