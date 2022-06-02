@@ -17,6 +17,7 @@ class RequestSender:
         self.__method = HttpRequestMethod.GET
         self.__file = None
         self.__params = dict()
+        self.__header = dict()
 
     def set_url(self, url: str):
         self.__url = url
@@ -27,16 +28,22 @@ class RequestSender:
         return self
 
     def set_file(self, file: IO):
-        self.__file = {"file": file}
+        self.__file = {"files": file}
         return self
 
     def add_param(self, key: str, val: str):
         self.__params[key] = val
+        return self
+
+    def add_header(self, key: str, val: str):
+        self.__header[key] = val
+        return self
 
     def send(self) -> Response:
         if self.__url == "":
             raise InvalidRequestAttributeException
-        return request(self.__method, self.__url, params=self.__params, files=self.__file)
+        print(self.__url, self.__method, self.__params, self.__header)
+        return request(self.__method, self.__url, params=self.__params, files=self.__file, headers=self.__header)
 
 
 class InvalidRequestAttributeException(Exception):

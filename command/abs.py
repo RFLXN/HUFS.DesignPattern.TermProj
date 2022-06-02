@@ -7,3 +7,4 @@ class Command(metaclass=ABCMeta):
     @abstractmethod
     def execute(self, *args, **kwargs) -> CommandResult:
         pass
+    

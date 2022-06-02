@@ -13,7 +13,7 @@ def _get_resource_path() -> str:
 
 
 def _get_api_info_file_path() -> str:
-    """get api-info.json file path
+    """get api-info.json files path
     :return: str
     """
     return str((Path(_get_resource_path()) / "api-info.json").resolve())
@@ -79,10 +79,22 @@ class ApiInfoStore(metaclass=SingletonMeta):
                 builder.set_path(endpoint_obj["path"])
                 builder.set_method(endpoint_obj["method"])
 
-                params_list = endpoint_obj["params"]
-                if params_list is not None:
-                    for param_obj in params_list:
-                        builder.add_params(EndpointParam(param_obj["name"], param_obj["type"]))
+                try:
+                    params_list = endpoint_obj["params"]
+                    if params_list is not None:
+                        for param_obj in params_list:
+                            builder.add_param(EndpointParam(param_obj["name"], param_obj["type"]))
+                except KeyError:
+                    pass
+
+                try:
+                    path_params_list = endpoint_obj["pathParams"]
+                    if path_params_list is not None:
+                        for path_param in path_params_list:
+                            builder.add_path_param(path_param)
+                except KeyError:
+                    pass
+
                 directory[endpoint_name] = builder.build()
             self.__api_directories[directory_name] = directory
 

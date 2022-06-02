@@ -2,8 +2,8 @@ import json
 
 
 def load_json_from_file(path: str):
-    """load json file as dict
-    :param str path: json file path
+    """load json files as dict
+    :param str path: json files path
     :return: dict
     """
     with open(path, mode="r", encoding="utf8") as f:

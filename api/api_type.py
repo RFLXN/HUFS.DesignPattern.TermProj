@@ -16,11 +16,12 @@ class EndpointParam:
 
 
 class ApiEndpoint:
-    def __init__(self, name: str, path: str, method: str, params: list):
+    def __init__(self, name: str, path: str, method: str, params: list, path_params: list):
         self.__name = name
         self.__path = path
         self.__method = method
         self.__params = params
+        self.__path_params = path_params
 
     @property
     def name(self) -> str:
@@ -38,6 +39,10 @@ class ApiEndpoint:
     def params(self) -> list:
         return self.__params
 
+    @property
+    def path_params(self) -> list:
+        return self.__path_params
+
 
 # Builder Class for ApiEndpoint
 class ApiEndpointBuilder:
@@ -46,6 +51,7 @@ class ApiEndpointBuilder:
         self.__path = None
         self.__method = "GET"
         self.__params = list()
+        self.__path_params = list()
 
     def set_name(self, name: str):
         self.__name = name
@@ -62,15 +68,19 @@ class ApiEndpointBuilder:
         self.__method = method
         return self
 
-    def add_params(self, param: EndpointParam):
+    def add_param(self, param: EndpointParam):
         self.__params.append(param)
+        return self
+
+    def add_path_param(self, path_param: str):
+        self.__path_params.append(path_param)
         return self
 
     def build(self) -> ApiEndpoint:
         if self.__name is None or self.__path is None:
             raise EmptyAttributeException
 
-        return ApiEndpoint(self.__name, self.__path, self.__method, self.__params)
+        return ApiEndpoint(self.__name, self.__path, self.__method, self.__params, self.__path_params)
 
 
 class ApiDirectory(PathLikeDict):
