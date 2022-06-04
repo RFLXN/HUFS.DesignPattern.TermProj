@@ -18,6 +18,9 @@ class ApiClient(metaclass=SingletonMeta):
             self.__key_store.create_key_file()
         self.__key_store.set_key(key)
 
+    def get_key(self):
+        return self.__key_store.key
+
     def get_endpoint(self, dir_name: str, endpoint_name: str) -> ApiEndpoint:
         return self.__info_store / dir_name / endpoint_name
 

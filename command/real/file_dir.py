@@ -1,6 +1,6 @@
 from command import Command
 from command.exception import InvalidArgumentException
-from command.real.files.report import ReportCommand
+from command.real.analysis.analysis import AnalysisCommand
 from command.real.files.scan import ScanCommand
 from command.result import CommandResult
 
@@ -24,10 +24,10 @@ class FileCommand(Command):
 
             cmd_type = cmd_type.lower()
 
-            if cmd_type == "report":
-                return ReportCommand().execute(*args, **kwargs)
-            elif cmd_type == "scan":
+            if cmd_type == "scan":
                 return ScanCommand().execute(*args, **kwargs)
+
+            return CommandResult(False, "Error: Invalid Command.")
 
         except InvalidArgumentException:
             return CommandResult(False, "Error: Invalid Argument.")
