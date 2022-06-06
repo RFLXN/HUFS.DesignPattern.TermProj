@@ -13,7 +13,7 @@ class AnalysisCommand(Command):
         try:
             scan_id = ""
 
-            if len(args) >= 1 and args[0] is not None and args[0] != "":
+            if len(args) > 0 and args[0] is not None and args[0] != "":
                 scan_id = args[0]
 
             if kwargs["scan_id"] is not None and kwargs["scan_id"] != "":

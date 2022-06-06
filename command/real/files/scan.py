@@ -13,7 +13,7 @@ class ScanCommand(Command):
 
             file_path = ""
 
-            if len(args) > 1 and args[1] is not None and args[1] != "":
+            if len(args) > 0 and args[0] is not None and args[0] != "":
                 file_path = args[1]
 
             if kwargs["file_path"] is not None and kwargs["file_path"] != "":

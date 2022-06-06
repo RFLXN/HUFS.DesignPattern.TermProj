@@ -1,3 +1,17 @@
-from .file_dir import FileCommand
+from structure.singleton import SingletonMeta
 from .key import KeyCommand
-from analysis_dir import AnalysisCommand
+
+
+class CommandIndex(metaclass=SingletonMeta):
+    def __init__(self):
+        import files
+        import analysis
+        super(CommandIndex, self).__init__()
+        self.__idx = {
+            "scan-file": files.ScanCommand,
+            "analysis": analysis.AnalysisCommand
+        }
+
+    @property
+    def index(self) -> dict:
+        return self.__idx
