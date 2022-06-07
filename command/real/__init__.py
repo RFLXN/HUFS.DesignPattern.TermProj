@@ -9,7 +9,8 @@ class CommandIndex(metaclass=SingletonMeta):
         super(CommandIndex, self).__init__()
         self.__idx = {
             "scan-file": files.ScanCommand,
-            "analysis": analysis.AnalysisCommand
+            "analysis": analysis.AnalysisCommand,
+            "key": KeyCommand
         }
 
     @property
