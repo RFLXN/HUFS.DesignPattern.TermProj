@@ -1,4 +1,4 @@
 # API: https://developers.virustotal.com/v2.0
-from command.real.files.scan import ScanFileCommand
+from repl.parser import CommandParser
 
-ScanFileCommand().execute()
+CommandParser().run()

@@ -8,8 +8,11 @@ from util.json import load_json_from_str
 class AnalysisCommand(Command):
     def __init__(self):
         super(AnalysisCommand, self).__init__()
+        self._name = "analysis"
 
-    def execute(self, *args, **kwargs) -> CommandResult:
+    def _execute(self, *args) -> CommandResult:
+
+
         try:
             scan_id = ""
 
@@ -68,6 +71,67 @@ class AnalysisCommand(Command):
             return CommandResult(False, "Error: Invalid Scan ID.")
         except InvalidApiKeyException:
             return CommandResult(False, "Error: Invalid API Key.")
+
+    def _help(self) -> str:
+        return "Command: analysis / Usage: analysis {SCAN_ID}"
+
+
+class StatusWrapper:
+    def __init__(self, raw: dict):
+        self.__raw = raw
+
+    @property
+    def harmless(self) -> str:
+        return self.__raw["harmless"]
+
+    @property
+    def unsupported_type(self) -> str:
+        return self.__raw["type-unsupported"]
+
+    @property
+    def suspicious(self) -> str:
+        return self.__raw["suspicious"]
+
+    @property
+    def timeout(self) -> str:
+        return self.__raw["timeout"]
+
+    @property
+    def failure(self) -> str:
+        return self.__raw["failure"]
+
+    @property
+    def malicious(self) -> str:
+        return self.__raw["malicious"]
+
+    @property
+    def undetected(self) -> str:
+        return self.__raw["undetected"]
+
+
+class VaccineResultWrapper:
+    def __init__(self, raw: dict):
+        self.__raw = raw
+
+
+
+
+class AnalysisResultWrapper:
+    def __init__(self, raw: dict):
+        self.__raw = raw
+
+    @property
+    def progress(self) -> str:
+        return self.__raw["attributes"]["status"]
+
+    @property
+    def status(self) -> StatusWrapper:
+        return StatusWrapper(self.__raw["attributes"]["stats"])
+
+    @property
+    def scan_results(self):
+        return VaccineResultWrapper(self.__raw["attributes"]["results"])
+
 
 
 class InvalidScanIdException(InvalidArgumentException):

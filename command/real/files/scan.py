@@ -6,36 +6,26 @@ from util.json import load_json_from_str
 
 
 class ScanCommand(Command):
-    def execute(self, *args, **kwargs) -> CommandResult:
+    def __init__(self):
+        super(ScanCommand, self).__init__()
+        self._name = "scan"
+
+    def _execute(self, *args) -> CommandResult:
+        client = ApiClient()
+        target_endpoint = client.get_endpoint("files", "scan")
+
+        if not self._has_args(1, args):
+            raise InvalidArgumentException
+
+        file_path = args[0]
+
         try:
-            client = ApiClient()
-            target_endpoint = client.get_endpoint("files", "scan")
-
-            file_path = ""
-
-            if len(args) > 0 and args[0] is not None and args[0] != "":
-                file_path = args[1]
-
-            if kwargs["file_path"] is not None and kwargs["file_path"] != "":
-                file_path = kwargs["file_path"]
-
-            if file_path == "":
-                raise InvalidFilePathException
-
-            target_file = None
-
-            try:
-                target_file = open(file_path, "rb")
-            except FileNotFoundError:
-                raise InvalidFilePathException
-            except PermissionError:
-                return CommandResult(False, "Error: Permission Denied.")
-
+            target_file = open(file_path, "rb")
             if target_file is None:
-                raise InvalidFilePathException
+                raise FileNotFoundError
 
+            print("Uploading File...")
             result = client.exec_endpoint(target_endpoint, file=target_file)
-
             if result.status_code == 403:
                 raise InvalidApiKeyException
 
@@ -47,13 +37,18 @@ class ScanCommand(Command):
                 return CommandResult(True, f"Successfully Upload File.\n"
                                      + f"File Path: {file_path}\n"
                                      + f"Scan ID: {scan_id}\n")
+            # TODO: ADD Scan ID Store
+
             except KeyError:
                 return CommandResult(False, "Error: API Error.")
 
-        except InvalidFilePathException:
+        except FileNotFoundError:
             return CommandResult(False, "Error: Invalid File Path.")
-        except InvalidApiKeyException:
-            return CommandResult(False, "Error: Invalid API Key.")
+        except PermissionError:
+            return CommandResult(False, "Error: File Permission Denied.")
+
+    def _help(self) -> str:
+        return "Command: scan / Usage: scan {FILE_PATH}"
 
 
 class InvalidFilePathException(InvalidArgumentException):

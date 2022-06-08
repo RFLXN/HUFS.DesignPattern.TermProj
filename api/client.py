@@ -15,6 +15,7 @@ class ApiClient(metaclass=SingletonMeta):
 
     def set_key(self, key: str):
         if not self.__key_store.is_key_file_exist():
+            print("Create Key File...")
             self.__key_store.create_key_file()
         self.__key_store.set_key(key)
 
