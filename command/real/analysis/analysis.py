@@ -5,77 +5,6 @@ from command.result import CommandResult
 from util.json import load_json_from_str
 
 
-class AnalysisCommand(Command):
-    def __init__(self):
-        super(AnalysisCommand, self).__init__()
-        self._name = "analysis"
-
-    def _execute(self, *args) -> CommandResult:
-
-
-        try:
-            scan_id = ""
-
-            if len(args) > 0 and args[0] is not None and args[0] != "":
-                scan_id = args[0]
-
-            if kwargs["scan_id"] is not None and kwargs["scan_id"] != "":
-                scan_id = kwargs["scan_id"]
-
-            if scan_id == "":
-                raise InvalidScanIdException
-
-            target_endpoint = ApiClient().get_endpoint("analysis", "analysis")
-
-            result = ApiClient().exec_endpoint(target_endpoint, path_params={"{id}": scan_id})
-
-            if result.status_code == 403:
-                raise InvalidApiKeyException
-
-            result = load_json_from_str(result.text)
-
-            msg = f"RESULT: {scan_id}\n"
-            try:
-                result = result["data"]
-
-                progress = result["attributes"]["status"]
-                msg += f"Progress: {progress}\n"
-
-                status = result["attributes"]["stats"]
-                harmless = "Harmless: " + str(status["harmless"])
-                unsupported_type = "Unsupported Type: " + str(status["type-unsupported"])
-                suspicious = "Suspicious: " + str(status["suspicious"])
-                timeout = "Timeout: " + str(status["timeout"])
-                failure = "Failure: " + str(status["failure"])
-                malicious = "Malicious: " + str(status["malicious"])
-                undetected = "Undetected: " + str(status["undetected"])
-
-                msg += f"{undetected}\n{harmless}\n{suspicious}\n{malicious}\n{unsupported_type}\n"
-                msg += f"{failure}\n{timeout}\n"
-
-                scan_result: dict = result["attributes"]["results"]
-                scaner_names = scan_result.keys()
-                for scaner_name in scaner_names:
-                    scaner_result = scan_result[scaner_name]
-                    r = scaner_result["category"]
-                    engine_name = scaner_result["engine_name"]
-                    engine_version = scaner_result["engine_version"]
-                    t = f"{engine_name}({engine_version}): {r}"
-                    msg += f"{t}\n"
-
-            except KeyError:
-                return CommandResult(False, "Error: API Error.")
-
-            return CommandResult(True, msg)
-        except InvalidScanIdException:
-            return CommandResult(False, "Error: Invalid Scan ID.")
-        except InvalidApiKeyException:
-            return CommandResult(False, "Error: Invalid API Key.")
-
-    def _help(self) -> str:
-        return "Command: analysis / Usage: analysis {SCAN_ID}"
-
-
 class StatusWrapper:
     def __init__(self, raw: dict):
         self.__raw = raw
@@ -113,7 +42,21 @@ class VaccineResultWrapper:
     def __init__(self, raw: dict):
         self.__raw = raw
 
+    @property
+    def result(self) -> str:
+        return self.__raw["category"]
 
+    @property
+    def engine_name(self) -> str:
+        return self.__raw["engine_name"]
+
+    @property
+    def engine_version(self) -> str:
+        return self.__raw["engine_version"]
+
+    @property
+    def engine_update(self) -> str:
+        return self.__raw["engine_update"]
 
 
 class AnalysisResultWrapper:
@@ -129,9 +72,78 @@ class AnalysisResultWrapper:
         return StatusWrapper(self.__raw["attributes"]["stats"])
 
     @property
-    def scan_results(self):
-        return VaccineResultWrapper(self.__raw["attributes"]["results"])
+    def vaccine_names(self) -> list[str]:
+        return self.__raw["attributes"]["results"].keys()
 
+    @property
+    def scan_results(self) -> dict[str, VaccineResultWrapper]:
+        results = {}
+        raw_results = self.__raw["attributes"]["results"]
+
+        for name in self.vaccine_names:
+            result = raw_results[name]
+            results[name] = VaccineResultWrapper(result)
+
+        return results
+
+
+class AnalysisCommand(Command):
+    def __init__(self):
+        super(AnalysisCommand, self).__init__()
+        self._name = "analysis"
+
+    def _execute(self, *args) -> CommandResult:
+        if not self._has_args(1, args):
+            raise InvalidArgumentException
+
+        scan_id = args[0]
+
+        client = ApiClient()
+        target_endpoint = client.get_endpoint("analysis", "analysis")
+
+        print("Fetching Data...")
+        result = client.exec_endpoint(target_endpoint, path_params={"{id}": scan_id})
+
+        if result.status_code == 403:
+            return CommandResult(False, "Error: Invalid API Key.")
+
+        result = load_json_from_str(result.text)
+        result = AnalysisResultWrapper(result)
+
+        msg = f"Result: {scan_id}\n"
+
+        if self._has_args(2, args):
+            option = args[1].lower()
+            if option == "verbose":
+                msg += self.__do_verbose(result)
+        else:
+            msg += self.__do_default(result)
+
+        return CommandResult(True, msg)
+
+    def _help(self) -> str:
+        return "Command: analysis / Usage: analysis {SCAN_ID}"
+
+    def __do_default(self, result: AnalysisResultWrapper) -> str:
+        msg = f"Progress: {result.progress}\n"
+        msg += f"""Undetected: {result.status.undetected}
+        Harmless: {result.status.harmless}
+        Malicious: {result.status.malicious}
+        Suspicious: {result.status.suspicious}
+        Failure: {result.status.failure}
+        Timeout: {result.status.timeout}
+        Type Unsupported: {result.status.unsupported_type}"""
+
+        return msg
+
+    def __do_verbose(self, result: AnalysisResultWrapper) -> str:
+        msg = self.__do_default(result)
+
+        for vaccine_name in result.vaccine_names:
+            vaccine_result = result.scan_results[vaccine_name]
+            msg += f"\n{vaccine_result.engine_name} ({vaccine_result.engine_version}): {vaccine_result.result}"
+
+        return msg
 
 
 class InvalidScanIdException(InvalidArgumentException):
