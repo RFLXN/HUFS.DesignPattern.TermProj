@@ -144,8 +144,3 @@ class AnalysisCommand(Command):
             msg += f"\n{vaccine_result.engine_name} ({vaccine_result.engine_version}): {vaccine_result.result}"
 
         return msg
-
-
-class InvalidScanIdException(InvalidArgumentException):
-    def __init__(self):
-        super(InvalidScanIdException, self).__init__()
