@@ -6,3 +6,8 @@ class InvalidApiKeyException(Exception):
 class InvalidArgumentException(Exception):
     def __init__(self):
         super(InvalidArgumentException, self).__init__()
+
+
+class InvalidCommandException(KeyError):
+    def __init__(self):
+        super(InvalidCommandException, self).__init__()

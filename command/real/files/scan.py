@@ -26,6 +26,9 @@ class ScanCommand(Command):
 
             print("Uploading File...")
             result = client.exec_endpoint(target_endpoint, file=target_file)
+
+            target_file.close()
+
             if result.status_code == 403:
                 raise InvalidApiKeyException
 

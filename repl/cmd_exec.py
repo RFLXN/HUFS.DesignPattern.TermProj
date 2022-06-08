@@ -7,17 +7,18 @@ class CommandExecutor(metaclass=SingletonMeta):
         super(CommandExecutor, self).__init__()
         self.__cmd_fac = CommandFactory()
 
-    def handle_command(self, cmd_name, *args, **kwargs):
+    def handle_command(self, cmd_name, *args):
         try:
             target_cmd = self.__cmd_fac.get_command(cmd_name)
             if target_cmd is None:
                 raise KeyError
-            result = target_cmd.execute(*args, **kwargs)
+            result = target_cmd.run(*args)
             if not result.success:
-                return self.__red_text(result.result)
-            return result.result
+                print(self.__red_text(result.result))
+            else:
+                print(result.result)
         except KeyError:
-            return self.__red_text("Invalid Command.")
+            print(self.__red_text("Invalid Command."))
 
     def __red_text(self, msg):
-        return msg + "\033[91m"
+        return "\033[91m" + msg + "\033[0m"

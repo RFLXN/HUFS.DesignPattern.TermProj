@@ -1,1 +1,1 @@
-from scan import ScanCommand
+from .scan import ScanCommand

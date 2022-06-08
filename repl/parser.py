@@ -1,5 +1,3 @@
-import sys
-
 from .cmd_exec import CommandExecutor
 from .exception import ExitSignal
 from structure.singleton import SingletonMeta
@@ -32,10 +30,10 @@ class CommandParser(metaclass=SingletonMeta):
         args = s.split(" ")
         self.__handle_cmd(*args)
 
-    def __handle_cmd(self, *args, **kwargs):
+    def __handle_cmd(self, *args):
         cmd_name = args[0]
         cmd_args = args[1:]
-        CommandExecutor().handle_command(cmd_name, *cmd_args, **kwargs)
+        CommandExecutor().handle_command(cmd_name, *cmd_args)
 
     def __do_exit(self):
         raise ExitSignal

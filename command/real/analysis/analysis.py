@@ -108,7 +108,7 @@ class AnalysisCommand(Command):
             return CommandResult(False, "Error: Invalid API Key.")
 
         result = load_json_from_str(result.text)
-        result = AnalysisResultWrapper(result)
+        result = AnalysisResultWrapper(result["data"])
 
         msg = f"Result: {scan_id}\n"
 
@@ -116,6 +116,8 @@ class AnalysisCommand(Command):
             option = args[1].lower()
             if option == "verbose":
                 msg += self.__do_verbose(result)
+            else:
+                msg += self.__do_default(result)
         else:
             msg += self.__do_default(result)
 
@@ -126,13 +128,13 @@ class AnalysisCommand(Command):
 
     def __do_default(self, result: AnalysisResultWrapper) -> str:
         msg = f"Progress: {result.progress}\n"
-        msg += f"""Undetected: {result.status.undetected}
-        Harmless: {result.status.harmless}
-        Malicious: {result.status.malicious}
-        Suspicious: {result.status.suspicious}
-        Failure: {result.status.failure}
-        Timeout: {result.status.timeout}
-        Type Unsupported: {result.status.unsupported_type}"""
+        msg += f"Undetected: {result.status.undetected}\n"\
+            + f"Harmless: {result.status.harmless}\n"\
+            + f"Malicious: {result.status.malicious}\n"\
+            + f"Suspicious: {result.status.suspicious}\n"\
+            + f"Failure: {result.status.failure}\n"\
+            + f"Timeout: {result.status.timeout}\n"\
+            + f"Type Unsupported: {result.status.unsupported_type}\n"\
 
         return msg
 

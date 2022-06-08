@@ -28,7 +28,7 @@ class RequestSender:
         return self
 
     def set_file(self, file: IO):
-        self.__file = {"files": file}
+        self.__file = {"file": file}
         return self
 
     def add_param(self, key: str, val: str):
@@ -42,7 +42,6 @@ class RequestSender:
     def send(self) -> Response:
         if self.__url == "":
             raise InvalidRequestAttributeException
-        print(self.__url, self.__method, self.__params, self.__header)
         return request(self.__method, self.__url, params=self.__params, files=self.__file, headers=self.__header)
 
 

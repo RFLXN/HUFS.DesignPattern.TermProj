@@ -1,7 +1,6 @@
 from abc import ABCMeta, abstractmethod
-
-from command.exception import InvalidArgumentException
-from command.result import CommandResult
+from .exception import InvalidArgumentException
+from .result import CommandResult
 
 
 class Command(metaclass=ABCMeta):
@@ -9,11 +8,11 @@ class Command(metaclass=ABCMeta):
         self._name = ""
 
     def run(self, *args) -> CommandResult:
-        pre = self._pre_execute(args)
+        pre = self._pre_execute(*args)
         if pre is not None:
             return pre
         try:
-            return self._execute(args)
+            return self._execute(*args)
         except InvalidArgumentException:
             return CommandResult(False, "Error: Invalid Argument. type ")
 
@@ -40,7 +39,7 @@ class Command(metaclass=ABCMeta):
         if is_help:
             return self._handle_help()
 
-    def _has_args(self, length: int, *args) -> bool:
+    def _has_args(self, length: int, args) -> bool:
         if len(args) < length or args[length-1] is None or args[length-1] == "":
             return False
         return True
