@@ -16,7 +16,7 @@ class HelpCommand(Command):
             return self.__do_default_help()
 
     def help(self) -> str:
-        return "Command: help / Usage: help [COMMAND_NAME]"
+        return "Command: help -> Show Command List / Usage: help [{COMMAND_NAME}]"
 
     def __do_target_help(self, cmd_name: str) -> CommandResult:
         for cmd in CommandIndex().index:

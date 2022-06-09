@@ -130,7 +130,7 @@ class AnalysisCommand(Command):
         return CommandResult(True, msg)
 
     def help(self) -> str:
-        return "Command: analysis / Usage: analysis [{SCAN_ID} | last] [verbose]"
+        return "Command: analysis -> Show Your Scan Result / Usage: analysis [{SCAN_ID} | last] [verbose]"
 
     def __do_default(self, result: AnalysisResultWrapper) -> str:
         msg = f"Progress: {result.progress}\n"

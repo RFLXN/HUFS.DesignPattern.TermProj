@@ -28,7 +28,7 @@ class KeyCommand(Command):
             return self.__do_set(api_key)
 
     def help(self) -> str:
-        return "Command: key / Usage: key [help | get | set {API_KEY}]"
+        return "Command: key -> Set API Key or Get API Key / Usage: key [help | get | set {API_KEY}]"
 
     def __do_get(self) -> CommandResult:
         try:

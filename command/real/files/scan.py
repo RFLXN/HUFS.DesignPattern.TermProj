@@ -55,7 +55,7 @@ class ScanCommand(Command):
             return CommandResult(False, "Error: File Permission Denied.")
 
     def help(self) -> str:
-        return "Command: scan / Usage: scan {FILE_PATH}"
+        return "Command: scan -> Upload File and Request File Scan / Usage: scan {FILE_PATH}"
 
 
 class InvalidFilePathException(InvalidArgumentException):

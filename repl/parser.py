@@ -10,7 +10,9 @@ class CommandParser(metaclass=SingletonMeta):
 
     def run(self):
         if len(argv) == 1:
-            print("VirusTotal CLI")
+            print("VirusTotal CLI /w Python")
+            print("Type help for Command List.")
+            print("Type exit for Close Application.")
             while True:
                 try:
                     self.__input()
@@ -25,7 +27,7 @@ class CommandParser(metaclass=SingletonMeta):
         s = input("VT>> ")
         lo = s.lower()
 
-        if lo == "exit" or lo == "stop" or lo == "quit":
+        if lo == "exit" or lo == "stop" or lo == "quit" or lo == "bye":
             return self.__do_exit()
 
         args = s.split(" ")

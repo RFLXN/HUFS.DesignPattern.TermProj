@@ -20,7 +20,7 @@ class IdCommand(Command):
             return self.__do_list()
 
     def help(self) -> str:
-        return "Command: id / Usage: id [last]"
+        return "Command: id -> Get Your Scan IDs / Usage: id [last]"
 
     def __do_list(self) -> CommandResult:
         ids = self.__db.id_list
