@@ -27,7 +27,7 @@ class KeyCommand(Command):
             api_key = args[1]
             return self.__do_set(api_key)
 
-    def _help(self) -> str:
+    def help(self) -> str:
         return "Command: key / Usage: key [help | get | set {API_KEY}]"
 
     def __do_get(self) -> CommandResult:

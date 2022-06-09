@@ -10,6 +10,7 @@ class CommandParser(metaclass=SingletonMeta):
 
     def run(self):
         if len(argv) == 1:
+            print("VirusTotal CLI")
             while True:
                 try:
                     self.__input()

@@ -25,11 +25,11 @@ class Command(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _help(self) -> str:
+    def help(self) -> str:
         pass
 
     def _handle_help(self):
-        return CommandResult(True, self._help())
+        return CommandResult(True, self.help())
 
     def _pre_execute(self, *args) -> CommandResult | None:
         is_help = False
@@ -39,7 +39,7 @@ class Command(metaclass=ABCMeta):
         if is_help:
             return self._handle_help()
 
-    def _has_args(self, length: int, args) -> bool:
-        if len(args) < length or args[length-1] is None or args[length-1] == "":
+    def _has_args(self, length: int, args: None | tuple) -> bool:
+        if args is None or len(args) < length or args[length-1] is None or args[length-1] == "":
             return False
         return True

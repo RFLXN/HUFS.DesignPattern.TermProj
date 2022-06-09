@@ -50,7 +50,7 @@ class ScanCommand(Command):
         except PermissionError:
             return CommandResult(False, "Error: File Permission Denied.")
 
-    def _help(self) -> str:
+    def help(self) -> str:
         return "Command: scan / Usage: scan {FILE_PATH}"
 
 

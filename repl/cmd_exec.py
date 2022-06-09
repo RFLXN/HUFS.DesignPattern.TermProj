@@ -18,7 +18,7 @@ class CommandExecutor(metaclass=SingletonMeta):
             else:
                 print(result.result)
         except KeyError:
-            print(self.__red_text("Invalid Command."))
+            print(self.__red_text("Invalid Command. Type help for Command List."))
 
     def __red_text(self, msg):
         return "\033[91m" + msg + "\033[0m"
