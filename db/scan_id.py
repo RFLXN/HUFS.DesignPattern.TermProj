@@ -23,13 +23,18 @@ def _cp_db_file():
 
 
 class ScanId:
-    def __init__(self, scan_id: str, date: datetime):
+    def __init__(self, scan_id: str, file_path: str, date: datetime):
         self.__scan_id = scan_id
         self.__date = date
+        self.__file_path = file_path
 
     @property
     def scan_id(self) -> str:
         return self.__scan_id
+
+    @property
+    def file_path(self) -> str:
+        return self.__file_path
 
     @property
     def date(self) -> datetime:
@@ -40,7 +45,7 @@ class ScanId:
         return self.date.strftime("%Y-%m-%d %H:%M:%S")
 
     def dictify(self) -> dict:
-        return {"id": self.scan_id, "date": self.date_str}
+        return {"id": self.scan_id, "path": self.file_path, "date": self.date_str}
 
 
 class ScanIdDB(metaclass=SingletonMeta):
@@ -61,8 +66,8 @@ class ScanIdDB(metaclass=SingletonMeta):
             return None
         return self.id_list[0]
 
-    def add_scan_id(self, scan_id: str):
-        id_obj = ScanId(scan_id, datetime.now())
+    def add_scan_id(self, scan_id: str, file_path: str):
+        id_obj = ScanId(scan_id, file_path, datetime.now())
         self.__ids.append(id_obj)
         self.__save_ids()
 
@@ -82,7 +87,7 @@ class ScanIdDB(metaclass=SingletonMeta):
             _cp_db_file()
         raw_ids = load_json_from_file(_get_db_file_path())
         for raw in raw_ids:
-            self.__ids.append(ScanId(raw["id"], datetime.strptime(raw["date"], "%Y-%m-%d %H:%M:%S")))
+            self.__ids.append(ScanId(raw["id"], raw["path"], datetime.strptime(raw["date"], "%Y-%m-%d %H:%M:%S")))
 
     def __save_ids(self):
         dict_list = []

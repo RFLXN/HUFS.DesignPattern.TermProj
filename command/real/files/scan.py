@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from api import ApiClient
 from command import Command
 from command.exception import InvalidApiKeyException, InvalidArgumentException
@@ -20,8 +22,10 @@ class ScanCommand(Command):
 
         file_path = args[0]
 
+        file_path = Path(file_path).resolve()
+
         try:
-            target_file = open(file_path, "rb")
+            target_file = file_path.open("rb")
             if target_file is None:
                 raise FileNotFoundError
 
@@ -38,7 +42,7 @@ class ScanCommand(Command):
             try:
                 result = result["data"]
                 scan_id = result["id"]
-                ScanIdDB().add_scan_id(scan_id)
+                ScanIdDB().add_scan_id(scan_id, str(file_path))
                 return CommandResult(True, f"Successfully Upload File.\n"
                                      + f"File Path: {file_path}\n"
                                      + f"Scan ID: {scan_id}\n")
