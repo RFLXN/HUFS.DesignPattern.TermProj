@@ -3,6 +3,7 @@ from command import Command
 from command.exception import InvalidArgumentException, InvalidApiKeyException
 from command.result import CommandResult
 from util.json import load_json_from_str
+from db import ScanIdDB
 
 
 class StatusWrapper:
@@ -97,6 +98,11 @@ class AnalysisCommand(Command):
             raise InvalidArgumentException
 
         scan_id = args[0]
+        if scan_id.lower() == "last":
+            scan_id = ScanIdDB().last
+            if scan_id is None:
+                return CommandResult(False, "Error: There is No Scan ID.")
+            scan_id = scan_id.scan_id
 
         client = ApiClient()
         target_endpoint = client.get_endpoint("analysis", "analysis")
@@ -124,7 +130,7 @@ class AnalysisCommand(Command):
         return CommandResult(True, msg)
 
     def help(self) -> str:
-        return "Command: analysis / Usage: analysis {SCAN_ID} [verbose]"
+        return "Command: analysis / Usage: analysis [{SCAN_ID} | last] [verbose]"
 
     def __do_default(self, result: AnalysisResultWrapper) -> str:
         msg = f"Progress: {result.progress}\n"

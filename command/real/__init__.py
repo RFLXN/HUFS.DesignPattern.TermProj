@@ -8,9 +8,10 @@ class CommandIndex(metaclass=SingletonMeta):
         from .files import ScanCommand
         from .key import KeyCommand
         from .help import HelpCommand
+        from command.real.ids import IdCommand
         super(CommandIndex, self).__init__()
 
-        self.__idx = [ScanCommand, AnalysisCommand, KeyCommand, HelpCommand]
+        self.__idx = [ScanCommand, AnalysisCommand, KeyCommand, HelpCommand, IdCommand]
 
     @property
     def index(self) -> list[Command]:

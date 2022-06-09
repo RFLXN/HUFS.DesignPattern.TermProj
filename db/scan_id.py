@@ -37,7 +37,7 @@ class ScanId:
 
     @property
     def date_str(self) -> str:
-        return self.date.strftime("%Y-%m-%d %H:%M%S")
+        return self.date.strftime("%Y-%m-%d %H:%M:%S")
 
     def dictify(self) -> dict:
         return {"id": self.scan_id, "date": self.date_str}
@@ -51,13 +51,23 @@ class ScanIdDB(metaclass=SingletonMeta):
 
     @property
     def id_list(self) -> list[ScanId]:
-        self.__ids.sort(key=lambda id_obj: id_obj.date)
+        self.__sort()
         return self.__ids
+
+    @property
+    def last(self) -> ScanId | None:
+        self.__sort()
+        if len(self.id_list) < 1:
+            return None
+        return self.id_list[0]
 
     def add_scan_id(self, scan_id: str):
         id_obj = ScanId(scan_id, datetime.now())
         self.__ids.append(id_obj)
         self.__save_ids()
+
+    def __sort(self):
+        self.__ids.sort(key=lambda id_obj: id_obj.date)
 
     def __is_db_file_exist(self) -> bool:
         try:
@@ -72,7 +82,10 @@ class ScanIdDB(metaclass=SingletonMeta):
             _cp_db_file()
         raw_ids = load_json_from_file(_get_db_file_path())
         for raw in raw_ids:
-            self.__ids.append(ScanId(raw["id"], datetime.strptime(raw["date"], "%Y-%m-%d %H:%M%S")))
+            self.__ids.append(ScanId(raw["id"], datetime.strptime(raw["date"], "%Y-%m-%d %H:%M:%S")))
 
     def __save_ids(self):
-        write_json_to_file(self.__ids, _get_db_file_path())
+        dict_list = []
+        for id_obj in self.__ids:
+            dict_list.append(id_obj.dictify())
+        write_json_to_file(dict_list, _get_db_file_path())
