@@ -3,6 +3,7 @@ from command import Command
 from command.exception import InvalidApiKeyException, InvalidArgumentException
 from command.result import CommandResult
 from util.json import load_json_from_str
+from db import ScanIdDB
 
 
 class ScanCommand(Command):
@@ -37,11 +38,10 @@ class ScanCommand(Command):
             try:
                 result = result["data"]
                 scan_id = result["id"]
+                ScanIdDB().add_scan_id(scan_id)
                 return CommandResult(True, f"Successfully Upload File.\n"
                                      + f"File Path: {file_path}\n"
                                      + f"Scan ID: {scan_id}\n")
-            # TODO: ADD Scan ID Store
-
             except KeyError:
                 return CommandResult(False, "Error: API Error.")
 
