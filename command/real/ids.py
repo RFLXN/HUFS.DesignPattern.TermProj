@@ -26,7 +26,7 @@ class IdCommand(Command):
         ids = self.__db.id_list
         if len(ids) < 1:
             return CommandResult(True, "There is no Scan ID.")
-        msg = "Num\t\tID\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tDate\n" + self.__make_bar(ids[0]) + "\n"
+        msg = "Num / ID / Date\n" + self.__make_bar(ids[0]) + "\n"
 
         for idx in range(len(ids)):
             id_obj = ids[idx]
