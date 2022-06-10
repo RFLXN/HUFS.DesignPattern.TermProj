@@ -9,7 +9,8 @@ class ApiRequestSender(metaclass=SingletonMeta):
     def send(self, endpoint: ApiEndpoint,
              params: dict = None,
              path_params: dict = None,
-             file: IO = None):
+             file: IO = None,
+             body: str = None):
         req = RequestSender()
 
         url = ApiInfoStore().root_url + endpoint.path
@@ -29,5 +30,7 @@ class ApiRequestSender(metaclass=SingletonMeta):
                 req.add_param(param_key, param_val)
         if file is not None:
             req.set_file(file)
+        if body is not None:
+            req.set_body(body)
 
         return req.send()

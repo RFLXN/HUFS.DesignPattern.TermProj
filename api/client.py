@@ -25,8 +25,12 @@ class ApiClient(metaclass=SingletonMeta):
     def get_endpoint(self, dir_name: str, endpoint_name: str) -> ApiEndpoint:
         return self.__info_store / dir_name / endpoint_name
 
-    def exec_endpoint(self, endpoint: ApiEndpoint, params: dict = None, path_params: dict = None, file: IO = None):
-        return self.__req_sender.send(endpoint, params, path_params, file)
+    def exec_endpoint(self, endpoint: ApiEndpoint,
+                      params: dict = None,
+                      path_params: dict = None,
+                      file: IO = None,
+                      body: str = None):
+        return self.__req_sender.send(endpoint, params, path_params, file, body)
 
     def __init_key(self):
         if self.__key_store.is_key_file_exist():

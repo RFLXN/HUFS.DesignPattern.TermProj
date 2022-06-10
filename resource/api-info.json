@@ -18,6 +18,17 @@
         "method": "GET",
         "pathParams": ["{id}"]
       }
+    },
+    "url": {
+      "scan": {
+        "path": "/urls",
+        "method": "POST"
+      },
+      "report": {
+        "path": "/urls/{id}",
+        "method": "GET",
+        "pathParams": ["{id}"]
+      }
     }
   }
 }

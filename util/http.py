@@ -18,6 +18,7 @@ class RequestSender:
         self.__file = None
         self.__params = dict()
         self.__header = dict()
+        self.__body = None
 
     def set_url(self, url: str):
         self.__url = url
@@ -39,10 +40,18 @@ class RequestSender:
         self.__header[key] = val
         return self
 
+    def set_body(self, body: str):
+        self.__body = body
+
     def send(self) -> Response:
         if self.__url == "":
             raise InvalidRequestAttributeException
-        return request(self.__method, self.__url, params=self.__params, files=self.__file, headers=self.__header)
+        return request(self.__method,
+                       self.__url,
+                       params=self.__params,
+                       files=self.__file,
+                       headers=self.__header,
+                       data=self.__body)
 
 
 class InvalidRequestAttributeException(Exception):

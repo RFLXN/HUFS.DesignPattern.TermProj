@@ -11,7 +11,7 @@ from db import ScanIdDB
 class ScanCommand(Command):
     def __init__(self):
         super(ScanCommand, self).__init__()
-        self._name = "scan"
+        self._name = "file-scan"
 
     def _execute(self, *args) -> CommandResult:
         client = ApiClient()
@@ -42,7 +42,7 @@ class ScanCommand(Command):
             try:
                 result = result["data"]
                 scan_id = result["id"]
-                ScanIdDB().add_scan_id(scan_id, str(file_path))
+                ScanIdDB().add_id(scan_id, str(file_path))
                 return CommandResult(True, f"Successfully Upload File.\n"
                                      + f"File Path: {file_path}\n"
                                      + f"Scan ID: {scan_id}\n")
@@ -55,7 +55,7 @@ class ScanCommand(Command):
             return CommandResult(False, "Error: File Permission Denied.")
 
     def help(self) -> str:
-        return "Command: scan -> Upload File and Request File Scan / Usage: scan {FILE_PATH}"
+        return "Command: file-scan -> Upload File and Request File Scan / Usage: file-scan {FILE_PATH}"
 
 
 class InvalidFilePathException(InvalidArgumentException):
