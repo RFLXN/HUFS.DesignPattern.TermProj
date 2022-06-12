@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import BinaryIO
 
 from api import ApiClient
 from command import Command
@@ -14,41 +15,32 @@ class ScanCommand(Command):
         self._name = "file-scan"
 
     def _execute(self, *args) -> CommandResult:
-        client = ApiClient()
-        target_endpoint = client.get_endpoint("files", "scan")
-
-        if not self._has_args(1, args):
-            raise InvalidArgumentException
-
-        file_path = args[0]
-
-        file_path = Path(file_path).resolve()
-
         try:
-            target_file = file_path.open("rb")
-            if target_file is None:
-                raise FileNotFoundError
+            if not self._has_args(1, args):
+                raise InvalidArgumentException
+
+            file_path = args[0]
+            file_path = Path(file_path).resolve()
+
+            file = self.__load_file(file_path)
 
             print("Uploading File...")
-            result = client.exec_endpoint(target_endpoint, file=target_file)
+            scan_id = self.__upload_file(file)
 
-            target_file.close()
+            print("Fetching File ID...")
+            file_id = self.__fetch_file_id(scan_id)
 
-            if result.status_code == 403:
-                raise InvalidApiKeyException
+            ScanIdDB().add_id(scan_id, file_id, str(file_path), "File")
 
-            result = load_json_from_str(result.text)
+            msg = ("Successfully Upload File!\n"
+                   + f"File Path: {str(file_path)}\n"
+                   + f"Scan ID: {scan_id}\n"
+                   + f"File ID: {file_id}\n"
+                   + "Type \"file-report last\" for Result.")
 
-            try:
-                result = result["data"]
-                scan_id = result["id"]
-                ScanIdDB().add_id(scan_id, str(file_path))
-                return CommandResult(True, f"Successfully Upload File.\n"
-                                     + f"File Path: {file_path}\n"
-                                     + f"Scan ID: {scan_id}\n")
-            except KeyError:
-                return CommandResult(False, "Error: API Error.")
-
+            return CommandResult(True, msg)
+        except KeyError:
+            return CommandResult(False, "Error: API Error.")
         except FileNotFoundError:
             return CommandResult(False, "Error: Invalid File Path.")
         except PermissionError:
@@ -56,6 +48,42 @@ class ScanCommand(Command):
 
     def help(self) -> str:
         return "Command: file-scan -> Upload File and Request File Scan / Usage: file-scan {FILE_PATH}"
+
+    def __upload_file(self, file: BinaryIO) -> str:
+        client = ApiClient()
+        target_endpoint = client.get_endpoint("files", "scan")
+
+        result = client.exec_endpoint(target_endpoint, file=file)
+
+        if result.status_code == 403:
+            raise InvalidApiKeyException
+
+        result = load_json_from_str(result.text)
+        result = result["data"]
+        scan_id = result["id"]
+
+        return scan_id
+
+    def __load_file(self, path: Path) -> BinaryIO:
+        target_file = path.open("rb")
+        if target_file is None:
+            raise FileNotFoundError
+        return target_file
+
+    def __fetch_file_id(self, scan_id: str) -> str:
+        client = ApiClient()
+        target_endpoint = client.get_endpoint("analysis", "analysis")
+
+        result = client.exec_endpoint(target_endpoint, path_params={"{id}": scan_id})
+
+        if result.status_code == 403:
+            raise InvalidApiKeyException
+
+        result = load_json_from_str(result.text)
+        result = result["meta"]
+        file_id = result["file_info"]["sha256"]
+
+        return file_id
 
 
 class InvalidFilePathException(InvalidArgumentException):

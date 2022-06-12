@@ -3,7 +3,6 @@ from pathlib import Path
 from shutil import copyfile
 from datetime import datetime
 
-from db.abs import AbstractIdDB
 from structure.singleton import SingletonMeta
 from util.json import load_json_from_file, write_json_to_file
 
@@ -25,10 +24,12 @@ def _cp_db_file():
 
 
 class ScanId:
-    def __init__(self, scan_id: str, scan_target: str, date: datetime):
+    def __init__(self, scan_id: str, object_id: str, scan_target: str, target_type: str, date: datetime):
         self.__scan_id = scan_id
         self.__date = date
         self.__scan_target = scan_target
+        self.__object_id = object_id
+        self.__target_type = target_type
 
     @property
     def scan_id(self) -> str:
@@ -39,6 +40,14 @@ class ScanId:
         return self.__scan_target
 
     @property
+    def object_id(self) -> str:
+        return self.__object_id
+
+    @property
+    def target_type(self) -> str:
+        return self.__target_type
+
+    @property
     def date(self) -> datetime:
         return self.__date
 
@@ -47,12 +56,14 @@ class ScanId:
         return self.date.strftime("%Y-%m-%d %H:%M:%S")
 
     def dictify(self) -> dict:
-        return {"id": self.scan_id, "target": self.scan_target, "date": self.date_str}
+        return {"scan_id": self.scan_id,
+                "object_id": self.object_id,
+                "target": self.scan_target,
+                "type": self.target_type,
+                "date": self.date_str}
 
 
-class ScanIdDB(AbstractIdDB):
-    metaclass = SingletonMeta
-
+class ScanIdDB(metaclass=SingletonMeta):
     def __init__(self):
         super(ScanIdDB, self).__init__()
         self.__ids: list[ScanId] = []
@@ -70,8 +81,8 @@ class ScanIdDB(AbstractIdDB):
             return None
         return self.id_list[0]
 
-    def add_id(self, i: str, target: str):
-        id_obj = ScanId(i, target, datetime.now())
+    def add_id(self, scan_id: str, object_id: str, target: str, target_type: str):
+        id_obj = ScanId(scan_id, object_id, target, target_type, datetime.now())
         self.__ids.append(id_obj)
         self.__save_ids()
 
@@ -91,7 +102,13 @@ class ScanIdDB(AbstractIdDB):
             _cp_db_file()
         raw_ids = load_json_from_file(_get_db_file_path())
         for raw in raw_ids:
-            self.__ids.append(ScanId(raw["id"], raw["target"], datetime.strptime(raw["date"], "%Y-%m-%d %H:%M:%S")))
+            self.__ids.append(
+                ScanId(raw["scan_id"],
+                       raw["object_id"],
+                       raw["target"],
+                       raw["type"],
+                       datetime.strptime(raw["date"], "%Y-%m-%d %H:%M:%S"))
+            )
 
     def __save_ids(self):
         dict_list = []

@@ -26,7 +26,7 @@ class IdCommand(Command):
         ids = self.__db.id_list
         if len(ids) < 1:
             return CommandResult(True, "There is no Scan ID.")
-        msg = "Num / ID / Target / Date\n" + self.__make_bar(ids[0]) + "\n"
+        msg = "Num / Target / Scan ID / Object ID / Type / Date\n" + self.__make_bar(ids[0]) + "\n"
 
         for idx in range(len(ids)):
             id_obj = ids[idx]
@@ -39,13 +39,22 @@ class IdCommand(Command):
         last = self.__db.last
         if last is None:
             return CommandResult(True, "There is no Scan ID.")
-        return CommandResult(True, f"ID: {last.scan_id}\tTarget: {last.scan_target}\tDate: {last.date_str}")
+        return CommandResult(True, f"Target: {last.scan_target}\n"
+                             + f"Scan ID: {last.scan_id}\n"
+                             + f"Object ID: {last.object_id}\n"
+                             + f"Object Type: {last.target_type}\n"
+                             + f"Date: {last.date_str}")
 
     def __make_id_msg(self, idx: int, id_obj: ScanId) -> str:
-        return f"{str(idx)}\t\t{id_obj.scan_id}\t\t{id_obj.scan_target}\t\t{id_obj.date_str}"
+        return f"{str(idx)}\t\t" \
+               + f"{id_obj.scan_target}\t\t" \
+               + f"{id_obj.scan_id}\t\t" \
+               + f"{id_obj.object_id}\t\t" \
+               + f"{id_obj.target_type}\t\t" \
+               + f"{id_obj.date_str}"
 
     def __make_bar(self, id_obj: ScanId) -> str:
-        m = f"000\t\t{id_obj.scan_id}\t\t{id_obj.scan_target}\t\t{id_obj.date_str}"
+        m = self.__make_id_msg(999, id_obj)
         bar = ""
         for i in m:
             if i == "\t":
