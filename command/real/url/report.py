@@ -36,7 +36,7 @@ class ReportCommand(Command):
             return CommandResult(False, "Error: API Error.")
 
     def help(self) -> str:
-        return "Command: url-report / Usage: url [last | {URL_ID}] [verbose]"
+        return "Command: url-report -> Show Your URL Report / Usage: url [last | {URL_ID}] [verbose]"
 
     def __fetch_report(self, url_id: str) -> UrlReport:
         client = ApiClient()

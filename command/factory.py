@@ -8,6 +8,7 @@ class CommandFactory(metaclass=SingletonMeta):
     def __init__(self):
         self.__commands: list[Command] = []
         self.__load_cmd()
+        self.__sort_cmd()
 
     def __load_cmd(self):
         idx = CommandIndex().index
@@ -22,3 +23,10 @@ class CommandFactory(metaclass=SingletonMeta):
 
     def __getitem__(self, item: str) -> Command:
         return self.get_command(item)
+
+    def __sort_cmd(self):
+        self.__commands.sort(key=lambda cmd: cmd.name)
+
+    @property
+    def all_commands(self) -> list[Command]:
+        return self.__commands

@@ -1,6 +1,5 @@
-from command import Command
+from command import Command, CommandFactory
 from command.exception import InvalidCommandException
-from command.real import CommandIndex
 from command.result import CommandResult
 
 
@@ -19,16 +18,14 @@ class HelpCommand(Command):
         return "Command: help -> Show Command List / Usage: help [{COMMAND_NAME}]"
 
     def __do_target_help(self, cmd_name: str) -> CommandResult:
-        for cmd in CommandIndex().index:
-            target: Command = cmd()
-            if target.name.lower() == cmd_name.lower():
-                return CommandResult(True, target.help())
+        for cmd in CommandFactory.all_commands:
+            if cmd.name.lower() == cmd_name.lower():
+                return CommandResult(True, cmd.help())
         raise InvalidCommandException
 
     def __do_default_help(self) -> CommandResult:
         msg = ""
-        for cmd in CommandIndex().index:
-            target: Command = cmd()
-            msg += target.help() + "\n"
+        for cmd in CommandFactory().all_commands:
+            msg += cmd.help() + "\n"
         msg = msg[:-1]
         return CommandResult(True, msg)

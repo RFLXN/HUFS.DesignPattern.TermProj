@@ -40,7 +40,7 @@ class ReportCommand(Command):
             return CommandResult(False, "Error: API Error.")
 
     def help(self) -> str:
-        return "Command: report -> Show Your File Report / Usage: report [last | {FILE_ID}] [verbose]"
+        return "Command: file-report -> Show Your File Report / Usage: report [last | {FILE_ID}] [verbose]"
 
     def __fetch_report(self, file_id: str) -> FileReport:
         client = ApiClient()
