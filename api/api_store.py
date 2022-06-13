@@ -3,9 +3,9 @@ from pathlib import Path
 from shutil import copyfile
 
 from structure.singleton import SingletonMeta
+from util.json import load_json_from_file, write_json_to_file
 from util.path_like_dict import PathLikeDict
 from .api_type import ApiEndpointBuilder, EndpointParam, ApiDirectory
-from util.json import load_json_from_file, write_json_to_file
 
 
 def _get_resource_path() -> str:
@@ -127,7 +127,7 @@ class ApiKeyStore(metaclass=SingletonMeta):
     def set_key(self, key: str):
         self.__api_key = key
         _set_api_key(key)
-        
+
     def create_key_file(self):
         _cp_default_api_key()
 

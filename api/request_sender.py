@@ -1,8 +1,9 @@
 from typing import IO
+
 from api.api_store import ApiInfoStore, ApiKeyStore
 from api.api_type import ApiEndpoint
-from util.http import RequestSender
 from structure.singleton import SingletonMeta
+from util.http import RequestSender
 
 
 class ApiRequestSender(metaclass=SingletonMeta):

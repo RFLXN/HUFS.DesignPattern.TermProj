@@ -1,9 +1,9 @@
+from urllib.parse import quote
+
 from api import ApiClient
 from command import Command
 from command.exception import InvalidArgumentException, InvalidApiKeyException
 from command.result import CommandResult
-from urllib.parse import quote
-
 from db import ScanIdDB
 from util.json import load_json_from_str
 

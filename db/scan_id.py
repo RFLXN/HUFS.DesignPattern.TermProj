@@ -1,7 +1,7 @@
+from datetime import datetime
 from os.path import dirname, realpath
 from pathlib import Path
 from shutil import copyfile
-from datetime import datetime
 
 from structure.singleton import SingletonMeta
 from util.json import load_json_from_file, write_json_to_file

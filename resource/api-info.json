@@ -5,7 +5,9 @@
       "report": {
         "path": "/files/{id}",
         "method": "GET",
-        "pathParams": ["{id}"]
+        "pathParams": [
+          "{id}"
+        ]
       },
       "scan": {
         "path": "/files",
@@ -16,7 +18,9 @@
       "analysis": {
         "path": "/analyses/{id}",
         "method": "GET",
-        "pathParams": ["{id}"]
+        "pathParams": [
+          "{id}"
+        ]
       }
     },
     "url": {
@@ -27,7 +31,9 @@
       "report": {
         "path": "/urls/{id}",
         "method": "GET",
-        "pathParams": ["{id}"]
+        "pathParams": [
+          "{id}"
+        ]
       }
     }
   }

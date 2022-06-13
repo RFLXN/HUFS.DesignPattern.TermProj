@@ -1,2 +1,2 @@
-from .scan import ScanCommand
 from .report import ReportCommand
+from .scan import ScanCommand

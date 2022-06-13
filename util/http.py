@@ -1,7 +1,7 @@
 from enum import Enum
+from typing import IO
 
 from requests import request, Response
-from typing import IO
 
 
 class HttpRequestMethod(Enum):

@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+
 from .exception import InvalidArgumentException
 from .result import CommandResult
 
@@ -40,6 +41,6 @@ class Command(metaclass=ABCMeta):
             return self._handle_help()
 
     def _has_args(self, length: int, args: None | tuple) -> bool:
-        if args is None or len(args) < length or args[length-1] is None or args[length-1] == "":
+        if args is None or len(args) < length or args[length - 1] is None or args[length - 1] == "":
             return False
         return True

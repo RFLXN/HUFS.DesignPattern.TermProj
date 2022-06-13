@@ -4,7 +4,7 @@ from command.exception import InvalidArgumentException, InvalidApiKeyException
 from command.result import CommandResult
 from command.type.api_url import UrlReport
 from db import ScanIdDB
-from util.json import load_json_from_str, write_json_to_file
+from util.json import load_json_from_str
 
 
 class ReportCommand(Command):

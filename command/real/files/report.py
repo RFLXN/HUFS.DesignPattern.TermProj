@@ -57,13 +57,13 @@ class ReportCommand(Command):
     def __create_default_msg(self, report: FileReport) -> str:
         status = report.file_status
         return (f"File: {report.file_name} ({report.file_extension} / {report.file_type}) Size: {report.file_size}B\n"
-                   + f"Undetected: {str(status.undetected)}\n"
-                   + f"Harmless: {str(status.harmless)}\n"
-                   + f"Malicious: {str(status.malicious)}\n"
-                   + f"Suspicious: {str(status.suspicious)}\n"
-                   + f"Failure: {str(status.failure)}\n"
-                   + f"Timeout: {str(status.timeout)}\n"
-                   + f"Type Unsupported: {str(status.type_unsupported)}")
+                + f"Undetected: {str(status.undetected)}\n"
+                + f"Harmless: {str(status.harmless)}\n"
+                + f"Malicious: {str(status.malicious)}\n"
+                + f"Suspicious: {str(status.suspicious)}\n"
+                + f"Failure: {str(status.failure)}\n"
+                + f"Timeout: {str(status.timeout)}\n"
+                + f"Type Unsupported: {str(status.type_unsupported)}")
 
     def __create_verbose_msg(self, report: FileReport) -> str:
         status = report.file_status

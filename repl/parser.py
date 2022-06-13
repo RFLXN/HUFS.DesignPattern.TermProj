@@ -1,7 +1,8 @@
+from sys import argv, exit
+
+from structure.singleton import SingletonMeta
 from .cmd_exec import CommandExecutor
 from .exception import ExitSignal
-from structure.singleton import SingletonMeta
-from sys import argv, exit
 
 
 class CommandParser(metaclass=SingletonMeta):

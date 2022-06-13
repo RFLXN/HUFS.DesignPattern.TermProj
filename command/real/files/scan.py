@@ -5,8 +5,8 @@ from api import ApiClient
 from command import Command
 from command.exception import InvalidApiKeyException, InvalidArgumentException
 from command.result import CommandResult
-from util.json import load_json_from_str
 from db import ScanIdDB
+from util.json import load_json_from_str
 
 
 class ScanCommand(Command):

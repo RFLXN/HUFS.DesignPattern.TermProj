@@ -1,9 +1,9 @@
 from typing import IO
 
+from structure.singleton import SingletonMeta
 from .api_store import ApiInfoStore, ApiKeyStore
 from .api_type import ApiEndpoint
 from .request_sender import ApiRequestSender
-from structure.singleton import SingletonMeta
 
 
 class ApiClient(metaclass=SingletonMeta):

@@ -1,7 +1,7 @@
+from structure.singleton import SingletonMeta
 from .abs import Command
 from .exception import InvalidCommandException
 from .real import CommandIndex
-from structure.singleton import SingletonMeta
 
 
 class CommandFactory(metaclass=SingletonMeta):

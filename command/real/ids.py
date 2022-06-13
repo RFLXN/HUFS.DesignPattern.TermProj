@@ -1,5 +1,4 @@
 from command import Command
-from command.exception import InvalidArgumentException
 from command.result import CommandResult
 from db import ScanIdDB
 from db.scan_id import ScanId
