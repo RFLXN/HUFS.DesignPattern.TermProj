@@ -1,5 +1,3 @@
-import traceback
-
 from api import ApiClient
 from command import Command
 from command.exception import InvalidArgumentException, InvalidApiKeyException
@@ -35,7 +33,6 @@ class ReportCommand(Command):
             else:
                 return CommandResult(True, self.__create_default_msg(report))
         except KeyError:
-            traceback.print_exc()
             return CommandResult(False, "Error: API Error.")
 
     def help(self) -> str:
