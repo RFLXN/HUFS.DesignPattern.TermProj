@@ -14,5 +14,5 @@ class CommandIndex(metaclass=SingletonMeta):
         self.__idx = [FileScan, KeyCommand, HelpCommand, IdCommand, UrlScan, FileReport, UrlReport]
 
     @property
-    def index(self) -> list[Command]:
+    def index(self) -> list[type(type(Command))]:
         return self.__idx

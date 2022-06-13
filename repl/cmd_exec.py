@@ -19,6 +19,8 @@ class CommandExecutor(metaclass=SingletonMeta):
                 print(result.result)
         except KeyError:
             print(self.__red_text("Invalid Command. Type help for Command List."))
+        except:
+            print((self.__red_text("An Unexpected Error Occurred.")))
 
     def __red_text(self, msg):
         return "\033[91m" + msg + "\033[0m"
