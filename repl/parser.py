@@ -27,7 +27,7 @@ class CommandParser(metaclass=SingletonMeta):
         s = input("VT>> ")
         lo = s.lower()
 
-        if lo == "exit" or lo == "stop" or lo == "quit" or lo == "bye":
+        if lo == "exit" or lo == "stop" or lo == "quit" or lo == "bye" or lo == "close":
             return self.__do_exit()
 
         args = s.split(" ")
