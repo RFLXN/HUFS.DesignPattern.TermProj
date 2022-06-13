@@ -138,7 +138,7 @@ class ApiKeyStore(metaclass=SingletonMeta):
         return self.__api_key
 
 
-class InvalidApiDirectoryNameException(Exception):
+class InvalidApiDirectoryNameException(KeyError):
     def __init__(self):
         super().__init__()
 
