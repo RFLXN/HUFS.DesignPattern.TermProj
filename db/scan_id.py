@@ -75,11 +75,45 @@ class ScanIdDB(metaclass=SingletonMeta):
         return self.__ids
 
     @property
+    def file_list(self) -> list[ScanId]:
+        files = []
+        for scan_id in self.id_list:
+            if scan_id.target_type == "File":
+                files.append(scan_id)
+        files.sort(key=lambda scan_id: scan_id.date, reverse=True)
+        return files
+
+    @property
+    def url_list(self) -> list[ScanId]:
+        urls = []
+        for scan_id in self.id_list:
+            if scan_id.target_type == "URL":
+                urls.append(scan_id)
+        urls.sort(key=lambda scan_id: scan_id.date, reverse=True)
+        return urls
+
+    @property
     def last(self) -> ScanId | None:
         self.__sort()
         if len(self.id_list) < 1:
             return None
         return self.id_list[0]
+
+    @property
+    def last_file(self) -> ScanId | None:
+        files = self.file_list
+        if len(files) < 1:
+            return None
+        else:
+            return files[0]
+
+    @property
+    def last_url(self) -> ScanId | None:
+        urls = self.url_list
+        if len(urls) < 1:
+            return None
+        else:
+            return urls[0]
 
     def add_id(self, scan_id: str, object_id: str, target: str, target_type: str):
         id_obj = ScanId(scan_id, object_id, target, target_type, datetime.now())

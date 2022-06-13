@@ -14,16 +14,26 @@ class IdCommand(Command):
     def _execute(self, *args) -> CommandResult:
         if self._has_args(1, args):
             if args[0].lower() == "last":
-                return self.__do_last()
-            raise InvalidArgumentException
+                if self._has_args(2, args):
+                    return self.__do_last(args[1])
+                else:
+                    return self.__do_last("")
+            else:
+                return self.__do_list(args[0])
         else:
-            return self.__do_list()
+            return self.__do_list("")
 
     def help(self) -> str:
-        return "Command: id -> Get Your Scan IDs / Usage: id [last]"
+        return "Command: id -> Get Your Scan IDs / Usage: id [url | file] Or id last [url | file]"
 
-    def __do_list(self) -> CommandResult:
-        ids = self.__db.id_list
+    def __do_list(self, target_type: str) -> CommandResult:
+        if target_type.lower() == "file" or target_type.lower() == "files":
+            ids = self.__db.file_list
+        elif target_type.lower() == "url" or target_type.lower() == "urls":
+            ids = self.__db.url_list
+        else:
+            ids = self.__db.id_list
+
         if len(ids) < 1:
             return CommandResult(True, "There is no Scan ID.")
         msg = "Num / Target / Scan ID / Object ID / Type / Date\n" + self.__make_bar(ids[0]) + "\n"
@@ -35,10 +45,17 @@ class IdCommand(Command):
 
         return CommandResult(True, msg)
 
-    def __do_last(self) -> CommandResult:
-        last = self.__db.last
+    def __do_last(self, target_type: str) -> CommandResult:
+        if target_type.lower() == "file" or target_type.lower() == "files":
+            last = self.__db.last_file
+        elif target_type.lower() == "url" or target_type.lower() == "urls":
+            last = self.__db.last_url
+        else:
+            last = self.__db.last
+
         if last is None:
             return CommandResult(True, "There is no Scan ID.")
+
         return CommandResult(True, f"Target: {last.scan_target}\n"
                              + f"Scan ID: {last.scan_id}\n"
                              + f"Object ID: {last.object_id}\n"
